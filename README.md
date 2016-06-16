@@ -1,6 +1,5 @@
 # 在线图片编辑器
 ####         包括图片上传，裁剪，缩放,旋转，水印（文字和图片）等操作，最终上传到服务器<br>
-先看看效果吧<br>
         首先html中需要先添加如下div,3个canvas分别表示主图，水印图片和水印文字画布，外面套一层遮罩层（为了方便鼠标拖动）。
 ~~~JavaScript
    <div style="width:600px; height:450px; overflow:auto;z-index:3;position:absolute;">
