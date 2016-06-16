@@ -1,8 +1,8 @@
 # 在线图片编辑器
-####         包括图片上传，裁剪，缩放,旋转，水印（文字和图片）等操作，最终上传到服务器<br>
-        首先html中需要先添加如下div,3个canvas分别表示主图，水印图片和水印文字画布，外面套一层遮罩层（为了方便鼠标拖动）。
-~~~JavaScript
-   <div style="width:600px; height:450px; overflow:auto;z-index:3;position:absolute;">
+包括图片上传，裁剪，缩放,旋转，水印（文字和图片）等操作，最终上传到服务器<br>
+首先html中需要先添加如下div,3个canvas分别表示主图，水印图片和水印文字画布，外面套一层遮罩层（为了方便鼠标拖动）。<br>
+~~~JavaSctipt
+  <div style="width:600px; height:450px; overflow:auto;z-index:3;position:absolute;">
                 <div>
                     <canvas id="canvas" width="400" height="400" style="border:2px solid gray;position:absolute;"></canvas>
                 </div>
@@ -14,7 +14,7 @@
                 </div>
             </div>
 ~~~
-        div添加好了，接下来就是初始化和推图片的操作：
+div添加好了，接下来就是初始化和推图片的操作：<br>
  1.初始化操作，主图片画布，水印图片遮罩层，水印图片画布，水印文本遮罩层，水印文本画布<br>
 ~~~C#
    sinoImageEditModule.init({
