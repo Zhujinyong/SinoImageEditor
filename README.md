@@ -52,7 +52,7 @@ div添加好了，接下来就是初始化和对图片的操作：<br>
      sinoImageEditModule.textWatermark(opcity,txt,font,style,left,top,width,height,textLeft,TextTop,callback);
 ~~~
 
-7.保存到服务端,POST图片base64值到远程服务器，CORS跨越保存
+7.保存到服务端,POST图片base64值到远程服务器，CORS跨域保存
 ~~~C#
      sinoImageEditModule.saveImage('http://localhost:8055/Home/SaveImage',function(result)
             {
