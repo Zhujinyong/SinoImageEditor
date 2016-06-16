@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片编辑</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script src="js/jquery_1.9.0.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/sinoImageEditModule.js"></script>
+<style>
+    a{
+        cursor:pointer;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6">
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active"><a href="#imageCut" data-toggle="tab">裁剪</a></li>
+                <li><a href="#imageRotation" data-toggle="tab">旋转、缩放</a></li>
+                <li><a href="#imageWatermark" data-toggle="tab">图片水印</a></li>
+                <li><a href="#textWatermark" data-toggle="tab">文字水印</a></li>
+                <li><a href="#saveToServer" data-toggle="tab">保存到服务端</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="imageCut">
+                    <button  onclick="sinoImageEditModule.imageCut()">应用</button>
+                </div>
+                <div class="tab-pane fade" id="imageRotation">
+                    <div style="margin: 10px">旋转角度: <input id="inputRotation"   type="number" value="60"></div>
+                    <div style="margin: 10px"> <button  onclick=" sinoImageEditModule.imageRotation(document.getElementById('inputRotation').value)">旋转</button>  <button  onclick="sinoImageEditModule.saveCanvas(1,function(){alert('应用成功')})" >应用</button> </div>
+                    <div style="margin-top: 50px">设置尺寸: </div>
+                    <div style="margin: 10px"> 图片宽: <input id="imageWidth"   type="number" value="400">px</div>
+                    <div style="margin: 10px"> 图片高: <input id="imageHeight"   type="number" value="400">px</div>
+                    <div style="margin-top: 50px">常用尺寸: </div>
+                    <div style="margin: 10px 10px 10px 30px">
+                        <a  onclick="sinoImageEditModule.setSize(60,60);">60*60</a>
+                        <a  style="margin-left: 36px"  onclick="sinoImageEditModule.setSize(80,60);">80*60</a>
+                    </div>
+                    <div style="margin: 10px 10px 10px 30px">
+                        <a  onclick="sinoImageEditModule.setSize(80,80);">80*80</a>
+                        <a  style="margin-left: 36px"  onclick="sinoImageEditModule.setSize(136,96);">136*96</a>
+                    </div>
+                    <div style="margin: 10px 10px 10px 30px">
+                        <a  onclick="sinoImageEditModule.setSize(200,100);">200*100</a>
+                        <a  style="margin-left: 20px"  onclick="sinoImageEditModule.setSize(310,230);">310*230</a>
+                    </div>
+                    <div style="margin: 10px 10px 10px 30px">
+                        <a  onclick="sinoImageEditModule.setSize(360,270);">360*270</a>
+                        <a  style="margin-left: 20px"  onclick="sinoImageEditModule.setSize(450,250);">450*250</a>
+                    </div>
+                    <div style="margin: 10px 10px 10px 30px">
+                        <a  onclick="sinoImageEditModule.setSize(480,270);">480*270</a>
+                        <a  style="margin-left: 20px"  onclick="sinoImageEditModule.setSize(500,300);">500*300</a>
+                    </div>
+                    <div style="margin: 10px 10px 10px 30px">
+                        <a  onclick="sinoImageEditModule.setSize(468,60);">468*60</a>
+                        <a  style="margin-left: 30px"  onclick="sinoImageEditModule.setSize();" title="恢复到原始图片">恢复原图</a>
+                    </div>
+
+                        <button   onclick="sinoImageEditModule.setSize(document.getElementById('imageWidth').value,document.getElementById('imageHeight').value);" >查看</button>
+                        <button  onclick="sinoImageEditModule.saveCanvas(1,function(){alert('应用成功')})" >应用</button>
+
+
+                </div>
+                <div class="tab-pane fade" id="imageWatermark">
+                    <div style="margin: 10px">  图片路径: <input id="inputPicUrl"  value="images/watermark.jpg"></div>
+                    <div  style="margin: 10px">
+                        透明度:<select id="selectOpacity">
+                        <option value ="1" selected="selected">1</option>
+                        <option value ="0.9">0.9</option>
+                        <option value ="0.8">0.8</option>
+                        <option value ="0.7">0.7</option>
+                        <option value ="0.6">0.6</option>
+                        <option value ="0.5">0.5</option>
+                        <option value ="0.4">0.4</option>
+                        <option value ="0.3">0.3</option>
+                        <option value ="0.1">0.1</option>
+                        <option value ="0">0</option>
+                        </select>
+                    </div>
+                    <div style="margin: 10px"> 图片宽: <input id="inputImageWidth"   type="number" value="100">px</div>
+                    <div style="margin: 10px"> 图片高: <input id="inputImageHeight"   type="number" value="100">px </div>
+                    <div  style="margin: 10px">图片Left: <input id="inputPicLeft"  type="number" value="0">px </div>
+                    <div  style="margin: 10px"> 图片Top: <input id="inputPicTop"  type="number" value="0">px</div>
+                    <button  id ="btnImgWatermark" style="margin: 20px" >添加</button>
+                    <button  style="margin: 20px" onclick="saveWatermarkImage()">应用</button>
+                </div>
+                <div class="tab-pane fade" id="textWatermark">
+                    <div style="margin: 10px">文本: <input id="inputText"  value="华夏太和"> </div>
+                    <div style="margin: 10px">颜色: <input id="inputTextColor"  value="rgba(255,255,255,0.5)" > </div>
+                    <div  style="margin: 10px">
+                        透明度:<select id="selectTextOpacity">
+                        <option value ="1" selected="selected">1</option>
+                        <option value ="0.9">0.9</option>
+                        <option value ="0.8">0.8</option>
+                        <option value ="0.7">0.7</option>
+                        <option value ="0.6">0.6</option>
+                        <option value ="0.5">0.5</option>
+                        <option value ="0.4">0.4</option>
+                        <option value ="0.3">0.3</option>
+                        <option value ="0.1">0.1</option>
+                        <option value ="0">0</option>
+                         </select>
+                    </div>
+                    <div style="margin: 10px"> 文字框宽: <input id="inputTextWidth"   type="number" value="100">px</div>
+                    <div style="margin: 10px"> 文字框高: <input id="inputTextHeight"   type="number" value="30">px </div>
+                    <div  style="margin: 10px">文字框Left: <input id="inputLeft"  type="number" value="0">px </div>
+                    <div  style="margin: 10px"> 文字框Top: <input id="inputTop"  type="number" value="0">px</div>
+                    <div style="margin: 10px"> 字号: <input id="inputSize"  type="number" value="20">px  </div>
+                    <div style="margin: 10px"> 字体:
+                            <select id="inputFont">
+                                <option value ="Times New Roman" selected="selected">Times New Roman</option>
+                                <option value ="Sans-serif">Sans-serif</option>
+                                <option value ="Verdana">Verdana</option>
+                                <option value ="microsoft yahei" >microsoft yahei</option>
+                                <option value ="Arial Narrow Bold Italic">Arial Narrow Bold Italic</option>
+                            </select>
+                    </div>
+                    <div  style="margin: 10px">文字Left: <input id="inputTextLeft"  type="number" value="10">px </div>
+                    <div  style="margin: 10px"> 文字Top: <input id="inputTextTop"  type="number" value="20">px</div>
+                    <button  id ="btnTextWatermarkTest" style="margin: 20px" >添加</button>
+                    <button   style="margin: 20px" onclick="saveWatermarkText()">应用</button>
+                </div>
+                <div class="tab-pane fade" id="saveToServer">
+                    <button  id ="btnSaveImage" style="margin: 20px" >保存</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-6">
+           拖动图片到下面的矩形框实现上传图片：
+            <div style="width:600px; height:450px; overflow:auto;z-index:3;position:absolute;">
+                <div>
+                    <canvas id="canvas" width="400" height="400" style="border:2px solid gray;position:absolute;"></canvas>
+                </div>
+                <div  id='imageCover' style="width:100px; height:100px;position:absolute;cursor:pointer;display:none;z-index:4;">
+                    <canvas id="watermarkImageCanvas"   width="100" height="100" style="position:absolute;"></canvas>
+                </div>
+                <div  id='textCover' style="width:100px; height:30px;position:absolute;cursor:pointer;z-index:5;display:none">
+                    <canvas id="watermarkTextCanvas"   width="100" height="30" style="position:absolute;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    /**
+    * 应用文本水印
+    * */
+    var saveWatermarkText=function (e)
+    {
+        sinoImageEditModule.saveCanvas(3,function(state){
+            if(state>0)
+                alert('应用成功！')
+            else
+                alert('未添加文本水印！')
+        });
+    };
+
+    /**
+    * 应用图片水印
+    * */
+    var saveWatermarkImage=function (e)
+    {
+        sinoImageEditModule.saveCanvas(2,function(state){
+            if(state>0)
+                alert('应用成功！')
+            else
+                alert('未添加图片水印！')
+        });
+    };
+
+
+    $(function () {
+
+        $('#myTab li:eq(0) a').tab('show');
+
+        //初始化操作，主图片画布，水印图片遮罩层，水印图片画布，水印文本遮罩层，水印文本画布
+        sinoImageEditModule.init({
+            canvasId:'canvas',
+            imageCoverId:'imageCover',
+            imageCanvasId:'watermarkImageCanvas',
+            textCoverId:'textCover',
+            textCanvasId:'watermarkTextCanvas',
+        });
+
+        //图片水印
+        document.querySelector('#btnImgWatermark').addEventListener('click', function(e){
+            sinoImageEditModule.imageWatermark(document.getElementById('inputPicUrl').value,document.getElementById('selectOpacity').value,document.getElementById('inputPicLeft').value,document.getElementById('inputPicTop').value,
+                    document.getElementById('inputImageWidth').value,document.getElementById('inputImageHeight').value,
+                    function(left,top)
+                    {
+                        document.getElementById('inputPicLeft').value=left;
+                        document.getElementById('inputPicTop').value=top;
+                    });
+        });
+
+        //文字水印
+        document.querySelector('#btnTextWatermarkTest').addEventListener('click', function(e){
+            sinoImageEditModule.textWatermark(document.getElementById('selectTextOpacity').value,document.getElementById('inputText').value,document.getElementById('inputSize').value+'px '+document.getElementById('inputFont').value,document.getElementById('inputTextColor').value,document.getElementById('inputLeft').value,document.getElementById('inputTop').value,
+                    document.getElementById('inputTextWidth').value,document.getElementById('inputTextHeight').value,document.getElementById('inputTextLeft').value,document.getElementById('inputTextTop').value,
+            function(left,top)
+            {
+                document.getElementById('inputLeft').value=left;
+                document.getElementById('inputTop').value=top;
+            });
+
+
+       });
+
+        //以图片的形式保存到服务器，后台用CORS
+        document.querySelector('#btnSaveImage').addEventListener('click', function(e){
+            sinoImageEditModule.saveImage('http://localhost:8055/Home/SaveImage',function(result)
+            {
+                if(result.State==1)
+                    alert('保存成功,文件名：'+result.FileName);
+                else
+                    alert('保存失败');
+            });
+        });
+    });
+</script>
+</body>
+</html>
