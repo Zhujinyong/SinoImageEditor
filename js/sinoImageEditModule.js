@@ -235,6 +235,7 @@ window.sinoImageEditModule = (function () {
         rotateTimes++;
         var xpos = canvas.width/2;
         var ypos = canvas.height/2;
+        ctx.clearRect(0, 0,  canvas.width, canvas.height);
         ctx.save();
         //ctx.drawImage(img, xpos - img.width / 2, ypos - img.height / 2);
         ctx.translate(xpos, ypos);
