@@ -39,7 +39,7 @@ window.sinoImageEditModule = (function () {
         watermarkTextCanvas=document.getElementById(watermarkTextCanvasId);
         watermarkImageCt=watermarkImageCanvas.getContext("2d");
         watermarkCt=watermarkTextCanvas.getContext("2d");
-        canvasBorder=parseInt(canvas.style.borderTop);
+        canvasBorder= handlerEmptyNum(canvas.style.borderTop);
         ctx = canvas.getContext("2d");
         canvas.addEventListener('dragover', function (e) {
             e.preventDefault(); //阻止默认事件
@@ -151,6 +151,9 @@ window.sinoImageEditModule = (function () {
                 }
 
         }
+
+        img.setAttribute("crossOrigin",'anonymous');
+
         img.src = canvas.toDataURL("image/png");
         drawImage();
         if(callback)
@@ -320,6 +323,13 @@ window.sinoImageEditModule = (function () {
     var redrawWatermarkImage=function (width,height){
         watermarkImageCt.clearRect(0,0,watermarkImageCanvas.width,watermarkImageCanvas.height);
         var newImgs = new Image();
+
+        if (waterImageSrc != null) {
+            if (waterImageSrc.indexOf("http:")==0 || waterImageSrc.indexOf("https:") == 0) {
+                newImgs.setAttribute('crossOrigin', 'anonymous');
+            }
+        }
+
         // 加载图片，完成后执行
         newImgs.onload=function()
         {
@@ -492,8 +502,10 @@ window.sinoImageEditModule = (function () {
         if(getValide(1)<0)
             return;
         var data = canvas.toDataURL();
+
         //删除字符串前的提示信息 "data:image/png;base64,"
         var b64 =data.substring(22);
+
         $.ajax({
             type: 'POST',
             url:savePath,
@@ -506,12 +518,56 @@ window.sinoImageEditModule = (function () {
         });
     };
 
+    /**
+     * 保存到本地，不上传到文件服务器，如果自己有文件服务器，则使用{@link saveImage}
+     * @param savePath 保存路径
+     * @param func  回调函数
+     */
+    var saveImage2 = function (func) {
+        if(getValide(1)<0)
+            return;
+        var data = canvas.toDataURL();
+
+        let allContent = document.getElementById("result-img-id");
+
+        //清空子元素
+        allContent.innerHTML = "";
+
+        let img = document.createElement("img");
+        img.setAttribute("src", data);
+
+        allContent.appendChild(img);
+
+        if(func) {
+            func({State:1});
+        }
+    };
+
+    var modifyImgSize = function (num) {
+        let width = canvas.width - num;
+        if (width < 80) {
+            width = 80;
+        }
+        let  height = canvas.height * (width / canvas.width);
+        sinoImageEditModule.setSize(width, height);
+    }
+
+    var handlerEmptyNum = function (num) {
+        if (num == undefined || num == null || num == "") {
+            return 0;
+        }
+        return parseInt(num);
+    }
+
+
     return {
         init:init,
         imageCut: imageCut,
         setSize:setSize,
+        modifyImgSize: modifyImgSize,
         imageRotation:imageRotation,
         saveImage:saveImage,
+        saveImage2: saveImage2,
         imageWatermark: imageWatermark,
         textWatermark: textWatermark,
         saveCanvas:saveCanvas
