@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>切图</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script src="js/jquery_1.9.0.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/sinoImageEditModule.js"></script>
+
+    <style>
+        a{
+            cursor:pointer;
+        }
+
+        .container {
+            width: 98%;
+            min-width: 1200px;
+            display: flex;
+        }
+
+        .container>div:nth-child(1) {
+            width: 550px;
+        }
+
+
+
+
+        .ipt-default-style {
+            border: none;
+            border-bottom: 1px solid #000;
+            outline: none;
+            width: 80px;
+        }
+
+        .cls-div-block {
+            border: 1px solid #b9b6b6;
+            border-radius: 5px;
+            position: relative;
+            margin-top: 20px;
+            padding: 25px 25px 0px;
+            width: 550px;
+        }
+
+        .cls-before-title-b::before {
+            content: "背景图编辑";
+            position: absolute;
+            left: 20px;
+            top: -10px;
+            background: #FFF;
+            display: inline-block;
+            width: 100px;
+            text-align: center;
+        }
+
+        .cls-before-title-c::before {
+            content: "图片水印编辑";
+            position: absolute;
+            left: 20px;
+            top: -10px;
+            background: #FFF;
+            display: inline-block;
+            width: 100px;
+            text-align: center;
+        }
+        .cls-before-title-d::before {
+            content: "文字水印编辑";
+            position: absolute;
+            left: 20px;
+            top: -10px;
+            background: #FFF;
+            display: inline-block;
+            width: 100px;
+            text-align: center;
+        }
+
+        .cls-div-block div {
+            margin: 10px;
+        }
+
+        .cls-after-px::after {
+            content: "px";
+        }
+
+        .container>div:nth-child(2) {
+            padding-left: 20px;
+            width: 630px;
+            height: 630px;
+        }
+
+        .container>div:nth-child(2) h3 {
+            text-align: center;
+        }
+
+        .img-canvas-cls {
+            width: 100%;
+            height: 100%;
+            min-width: 600px;
+            min-height: 600px;
+            overflow:auto;
+            z-index:3;
+            position:relative;
+        }
+
+        .img-canvas-cls #canvas {
+            border:2px solid gray;
+            position:absolute;
+        }
+
+        .img-canvas-cls #imageCover {
+            width:100px;
+            height:100px;
+            position:absolute;
+            cursor:pointer;
+            display:none;
+            z-index:4;
+        }
+
+        #imageCover #watermarkImageCanvas {
+            position:absolute;
+        }
+
+        .img-canvas-cls #textCover {
+            width:100px;
+            height:30px;
+            position:absolute;
+            cursor:pointer;
+            z-index:5;
+            display:none
+        }
+
+        .img-canvas-cls #textCover #watermarkTextCanvas {
+            position:absolute;
+        }
+
+        .container>div:nth-child(3) {
+            display: inline-block;
+            margin-top: 100px;
+            padding-right: 50px;
+            padding-left: 20px;
+        }
+
+        .container>div:nth-child(3) img {
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px 0px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div>
+
+        <div class="cls-div-block cls-before-title-b">
+            <div>
+                <span class="btn btn-default" onclick="sinoImageEditModule.setSize();" title="恢复到原始图片">恢复原图</span>
+                <span class="btn btn-default" onclick="sinoImageEditModule.saveCanvas(1,function(){alert('应用成功')})" >保存变动</span>
+            </div>
+            <div>
+                <span class="btn btn-default" onclick=" sinoImageEditModule.modifyImgSize(document.getElementById('inputModifyWidth').value);">缩放预览</span>
+
+                <span class="cls-after-px">缩放:
+                    <input id="inputModifyWidth" class="ipt-default-style"   type="number" value="100">
+                </span>
+            </div>
+
+            <div>
+                <span class="btn btn-default" onclick="sinoImageEditModule.setSize(document.getElementById('imageWidth').value,document.getElementById('imageHeight').value);" >宽高预览</span>
+
+                <span>设置尺寸:</span>
+                <span class="cls-after-px">宽:
+                    <input id="imageWidth" class="ipt-default-style"   type="number" value="400" />
+                </span>
+                    <span class="cls-after-px">高:
+                    <input id="imageHeight" class="ipt-default-style"   type="number" value="400" />
+                </span>
+            </div>
+
+            <div>
+                <span class="btn btn-default" onclick="sinoImageEditModule.imageCut()">裁剪</span>
+            </div>
+
+            <div>
+                <span class="btn btn-default" onclick=" sinoImageEditModule.imageRotation(document.getElementById('inputRotation').value)">旋转预览</span>
+
+                <span>旋转角度: </span>
+                <input id="inputRotation"  class="ipt-default-style"  type="number" value="60">
+            </div>
+        </div>
+
+        <div class="cls-div-block cls-before-title-c">
+            <div>
+                <span class="btn btn-default" id ="btnImgWatermark">预览水印</span>
+                <span class="btn btn-default" onclick="saveWatermarkImage()">保存变动</span>
+            </div>
+            <div>
+                <span>图片路径:
+                    <input id="inputPicUrl" class="ipt-default-style" style="width: 400px"  value="http://119.23.50.122/static/img/favicon.png">
+                </span>
+            </div>
+            <div>
+                <span class="cls-after-px">宽:
+                    <input id="inputImageWidth" class="ipt-default-style"   type="number" value="100">
+                </span>
+
+                <span class="cls-after-px">高:
+                    <input id="inputImageHeight" class="ipt-default-style"   type="number" value="100">
+                </span>
+
+            </div>
+            <div>
+                <span class="cls-after-px">左边距:
+                    <input id="inputPicLeft" class="ipt-default-style"   type="number" value="0">
+                </span>
+
+                <span class="cls-after-px">上边距:
+                    <input id="inputPicTop" class="ipt-default-style"   type="number" value="0">
+                </span>
+            </div>
+            <div>
+                <span>透明度:
+                    <select id="selectOpacity">
+                    <option value ="1" selected="selected">1</option>
+                    <option value ="0.9">0.9</option>
+                    <option value ="0.8">0.8</option>
+                    <option value ="0.7">0.7</option>
+                    <option value ="0.6">0.6</option>
+                    <option value ="0.5">0.5</option>
+                    <option value ="0.4">0.4</option>
+                    <option value ="0.3">0.3</option>
+                    <option value ="0.1">0.1</option>
+                    <option value ="0">0</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+
+        <div class="cls-div-block cls-before-title-d">
+            <div>
+                <span class="btn btn-default" id ="btnTextWatermarkTest">预览文字水印</span>
+                <span class="btn btn-default" onclick="saveWatermarkText()">保存文字水印</span>
+            </div>
+            <div>
+                <span >文本内容:
+                    <input id="inputText" class="ipt-default-style" style="width: 200px"   value="这是默认的文字">
+                </span>
+            </div>
+
+            <div style="display: none">
+                <span> 字体:
+                    <select id="inputFont">
+                        <option value ="Times New Roman" selected="selected">Times New Roman</option>
+                        <option value ="Sans-serif">Sans-serif</option>
+                        <option value ="Verdana">Verdana</option>
+                        <option value ="microsoft yahei" >microsoft yahei</option>
+                        <option value ="Arial Narrow Bold Italic">Arial Narrow Bold Italic</option>
+                    </select>
+                </span>
+
+                <span >
+                    透明度:
+                    <select id="selectTextOpacity">
+                        <option value ="1" selected="selected">1</option>
+                        <option value ="0.9">0.9</option>
+                        <option value ="0.8">0.8</option>
+                        <option value ="0.7">0.7</option>
+                        <option value ="0.6">0.6</option>
+                        <option value ="0.5">0.5</option>
+                        <option value ="0.4">0.4</option>
+                        <option value ="0.3">0.3</option>
+                        <option value ="0.1">0.1</option>
+                        <option value ="0">0</option>
+                    </select>
+                </span>
+
+            </div>
+
+            <div>
+                <span class="cls-after-px"> 字号:
+                    <input id="inputSize" class="ipt-default-style"  type="number" value="20" onchange="inputSizeChange()">
+                </span>
+            </div>
+
+            <div>
+                <span >颜色:
+                    <input id="inputTextColor"   class="ipt-default-style" style="width: 200px"  value="rgba(236, 14, 14, 0.9)" >
+                </span>
+            </div>
+
+            <div>
+                <span class="cls-after-px">宽:
+                    <input id="inputTextWidth" class="ipt-default-style"   type="number" value="200">
+                </span>
+                <span class="cls-after-px">高:
+                    <input id="inputTextHeight" class="ipt-default-style"   type="number" value="30">
+                </span>
+
+            </div>
+
+            <div>
+
+                <span class="cls-after-px">左边距:
+                    <input id="inputLeft" class="ipt-default-style"  type="number" value="0">
+                </span>
+                <span class="cls-after-px">上边距:
+                    <input id="inputTop" class="ipt-default-style"  type="number" value="0">
+                </span>
+
+            </div>
+
+            <div style="display: none">
+                <span class="cls-after-px" >文字Left:
+                    <input id="inputTextLeft" class="ipt-default-style"  type="number" value="10">
+                </span>
+
+                <span class="cls-after-px"> 文字Top:
+                    <input id="inputTextTop" class="ipt-default-style"  type="number" value="20">
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    <div>
+        <h3>拖动图片到下面的画布上</h3>
+
+        <h5>
+            <span id ="btnSaveImage" class="btn btn-default">生成图片</span>
+        </h5>
+
+        <div class="img-canvas-cls">
+            <div>
+                <canvas id="canvas" width="600" height="600"></canvas>
+            </div>
+            <div  id='imageCover'>
+                <canvas id="watermarkImageCanvas"   width="100" height="100"></canvas>
+            </div>
+            <div  id='textCover'>
+                <canvas id="watermarkTextCanvas"   width="100" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div id = "result-img-id">
+    </div>
+</div>
+
+
+
+
+<script>
+
+    function inputSizeChange() {
+        document.getElementById('inputTextTop').value = document.getElementById('inputSize').value;
+        if (document.getElementById('inputSize').value > document.getElementById('inputTextHeight').value) {
+            document.getElementById('inputTextHeight').value = document.getElementById('inputSize').value;
+        }
+    }
+    
+    /**
+     * 应用文本水印
+     * */
+    var saveWatermarkText=function (e)
+    {
+        sinoImageEditModule.saveCanvas(3,function(state){
+            if(state>0)
+                alert('应用成功！')
+            else
+                alert('未添加文本水印！')
+        });
+    };
+
+    /**
+     * 应用图片水印
+     * */
+    var saveWatermarkImage=function (e)
+    {
+        sinoImageEditModule.saveCanvas(2,function(state){
+            if(state>0)
+                alert('应用成功！')
+            else
+                alert('未添加图片水印！')
+        });
+    };
+
+
+    $(function () {
+
+        $('#myTab li:eq(0) a').tab('show');
+
+        //初始化操作，主图片画布，水印图片遮罩层，水印图片画布，水印文本遮罩层，水印文本画布
+        sinoImageEditModule.init({
+            canvasId:'canvas',
+            imageCoverId:'imageCover',
+            imageCanvasId:'watermarkImageCanvas',
+            textCoverId:'textCover',
+            textCanvasId:'watermarkTextCanvas',
+        });
+
+        //图片水印
+        document.querySelector('#btnImgWatermark').addEventListener('click', function(e){
+            sinoImageEditModule.imageWatermark(
+                document.getElementById('inputPicUrl').value,
+                document.getElementById('selectOpacity').value,
+                document.getElementById('inputPicLeft').value,
+                document.getElementById('inputPicTop').value,
+                document.getElementById('inputImageWidth').value,
+                document.getElementById('inputImageHeight').value,
+                function(left,top)
+                {
+                    document.getElementById('inputPicLeft').value=left;
+                    document.getElementById('inputPicTop').value=top;
+                });
+        });
+
+        //文字水印
+        document.querySelector('#btnTextWatermarkTest').addEventListener('click', function(e){
+            sinoImageEditModule.textWatermark(
+                document.getElementById('selectTextOpacity').value,
+                document.getElementById('inputText').value,
+                document.getElementById('inputSize').value+'px '+ document.getElementById('inputFont').value,
+                document.getElementById('inputTextColor').value,
+                document.getElementById('inputLeft').value,
+                document.getElementById('inputTop').value,
+                document.getElementById('inputTextWidth').value,
+                document.getElementById('inputTextHeight').value,
+                document.getElementById('inputTextLeft').value,
+                document.getElementById('inputTextTop').value,
+                function(left,top)
+                {
+                    document.getElementById('inputLeft').value=left;
+                    document.getElementById('inputTop').value=top;
+                });
+
+
+        });
+
+        //以图片的形式保存到服务器，后台用CORS
+        document.querySelector('#btnSaveImage').addEventListener('click', function(e){
+            sinoImageEditModule.saveImage2(function(result)
+            {
+                if(result.State==1)
+                    alert('保存成功');
+                else
+                    alert('保存失败');
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
